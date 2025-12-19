@@ -1,0 +1,412 @@
+
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legal Memory Game</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full m-0 p-0">
+  <div id="app" class="w-full h-full overflow-auto"></div>
+  <script>
+    const defaultConfig = {
+      background_color: "#0f172a",
+      card_back_color: "#1e40af",
+      card_front_color: "#f8fafc",
+      text_color: "#1e293b",
+      button_color: "#d97706",
+      font_family: "Georgia",
+      font_size: 16,
+      game_title: "Legal Memory Game",
+      win_message: "Case closed! You found all pairs!"
+    };
+
+    let config = {};
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let canFlip = true;
+
+    const legalIcons = [
+      { id: 1, icon: "⚖️", name: "Justice Scale" },
+      { id: 2, icon: "👨‍⚖️", name: "Judge" },
+      { id: 3, icon: "📜", name: "Legal Document" },
+      { id: 4, icon: "🏛️", name: "Courthouse" },
+      { id: 5, icon: "🔨", name: "Gavel" },
+      { id: 6, icon: "📋", name: "Contract" },
+      { id: 7, icon: "💼", name: "Briefcase" },
+      { id: 8, icon: "🎓", name: "Law Degree" }
+    ];
+
+    let cards = [];
+
+    function shuffleArray(array) {
+      const newArray = [...array];
+      for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+      }
+      return newArray;
+    }
+
+    function initializeGame() {
+      const cardPairs = [...legalIcons, ...legalIcons];
+      cards = shuffleArray(cardPairs).map((card, index) => ({
+        ...card,
+        uniqueId: index,
+        isFlipped: false,
+        isMatched: false
+      }));
+      flippedCards = [];
+      matchedPairs = 0;
+      canFlip = true;
+    }
+
+    function createCard(card) {
+      const cardEl = document.createElement('div');
+      cardEl.className = 'card-container';
+      cardEl.style.perspective = '1000px';
+      cardEl.style.cursor = 'pointer';
+
+      cardEl.innerHTML = `
+        <div class="card-inner" style="position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d;">
+          <div class="card-back" style="position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <span style="font-size: 2em;">⚖️</span>
+          </div>
+          <div class="card-front" style="position: absolute; width: 100%; height: 100%; backface-visibility: hidden; transform: rotateY(180deg); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            <span style="font-size: 3em; margin-bottom: 0.25em;">${card.icon}</span>
+            <span class="card-name" style="font-size: 0.75em; font-weight: 600;">${card.name}</span>
+          </div>
+        </div>
+      `;
+
+      cardEl.addEventListener('click', () => handleCardClick(card.uniqueId));
+      return cardEl;
+    }
+
+    function handleCardClick(uniqueId) {
+      if (!canFlip) return;
+
+      const card = cards.find(c => c.uniqueId === uniqueId);
+      if (!card || card.isFlipped || card.isMatched) return;
+
+      card.isFlipped = true;
+      flippedCards.push(card);
+      updateCardDisplay(uniqueId);
+
+      if (flippedCards.length === 2) {
+        canFlip = false;
+        checkForMatch();
+      }
+    }
+
+    function checkForMatch() {
+      const [card1, card2] = flippedCards;
+
+      if (card1.id === card2.id) {
+        card1.isMatched = true;
+        card2.isMatched = true;
+        matchedPairs++;
+        flippedCards = [];
+        canFlip = true;
+
+        if (matchedPairs === legalIcons.length) {
+          setTimeout(showWinMessage, 500);
+        }
+
+        updatePairsCount();
+      } else {
+        setTimeout(() => {
+          card1.isFlipped = false;
+          card2.isFlipped = false;
+          updateCardDisplay(card1.uniqueId);
+          updateCardDisplay(card2.uniqueId);
+          flippedCards = [];
+          canFlip = true;
+        }, 1000);
+      }
+    }
+
+    function updateCardDisplay(uniqueId) {
+      const card = cards.find(c => c.uniqueId === uniqueId);
+      const cardEl = document.querySelector(`[data-card-id="${uniqueId}"]`);
+      if (!cardEl) return;
+
+      const inner = cardEl.querySelector('.card-inner');
+      if (card.isFlipped || card.isMatched) {
+        inner.style.transform = 'rotateY(180deg)';
+      } else {
+        inner.style.transform = 'rotateY(0deg)';
+      }
+
+      if (card.isMatched) {
+        setTimeout(() => {
+          cardEl.style.opacity = '0.6';
+        }, 600);
+      }
+    }
+
+    function showWinMessage() {
+      const messageDiv = document.createElement('div');
+      messageDiv.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 2em 3em;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        text-align: center;
+        z-index: 1000;
+      `;
+
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseSize = config.font_size || defaultConfig.font_size;
+
+      messageDiv.innerHTML = `
+        <div style="font-size: ${baseSize * 3}px; margin-bottom: 0.5em;">🎉</div>
+        <div id="winMessageText" style="font-size: ${baseSize * 1.5}px; font-weight: bold; margin-bottom: 0.5em; font-family: '${customFont}', Georgia, serif;">${config.win_message || defaultConfig.win_message}</div>
+        <button id="playAgainBtn" style="margin-top: 1em; padding: 0.75em 2em; border: none; border-radius: 8px; font-size: ${baseSize}px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: '${customFont}', Georgia, serif;">Play Again</button>
+      `;
+
+      document.body.appendChild(messageDiv);
+
+      document.getElementById('playAgainBtn').addEventListener('click', () => {
+        messageDiv.remove();
+        initializeGame();
+        render();
+      });
+
+      const bgColor = config.card_front_color || defaultConfig.card_front_color;
+      const txtColor = config.text_color || defaultConfig.text_color;
+      const btnColor = config.button_color || defaultConfig.button_color;
+      const btnTextColor = config.card_front_color || defaultConfig.card_front_color;
+
+      messageDiv.style.backgroundColor = bgColor;
+      document.getElementById('winMessageText').style.color = txtColor;
+
+      const playBtn = document.getElementById('playAgainBtn');
+      playBtn.style.backgroundColor = btnColor;
+      playBtn.style.color = btnTextColor;
+
+      playBtn.onmouseenter = () => {
+        playBtn.style.transform = 'scale(1.05)';
+        playBtn.style.filter = 'brightness(1.1)';
+      };
+      playBtn.onmouseleave = () => {
+        playBtn.style.transform = 'scale(1)';
+        playBtn.style.filter = 'brightness(1)';
+      };
+    }
+
+    function render() {
+      const app = document.getElementById('app');
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseSize = config.font_size || defaultConfig.font_size;
+
+      app.innerHTML = `
+        <div style="min-height: 100%; padding: 2em; font-family: '${customFont}', Georgia, serif;">
+          <header style="text-align: center; margin-bottom: 2em;">
+            <h1 id="gameTitle" style="font-size: ${baseSize * 2}px; font-weight: bold; margin: 0 0 0.5em 0;">
+              ${config.game_title || defaultConfig.game_title}
+            </h1>
+            <div style="font-size: ${baseSize}px;">
+              <span id="pairsLabel">Pairs found: <span id="pairsCount" style="font-weight: bold;">0</span> / ${legalIcons.length}</span>
+            </div>
+          </header>
+
+          <main style="max-width: 800px; margin: 0 auto;">
+            <div id="gameBoard" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1em; margin-bottom: 2em;"></div>
+            <div style="text-align: center;">
+              <button id="resetBtn" style="padding: 0.75em 2em; border: none; border-radius: 8px; font-size: ${baseSize}px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: '${customFont}', Georgia, serif;">New Game</button>
+            </div>
+          </main>
+        </div>
+      `;
+
+      const gameBoard = document.getElementById('gameBoard');
+      cards.forEach(card => {
+        const cardEl = createCard(card);
+        cardEl.setAttribute('data-card-id', card.uniqueId);
+        cardEl.style.aspectRatio = '3/4';
+        gameBoard.appendChild(cardEl);
+      });
+
+      document.getElementById('resetBtn').addEventListener('click', () => {
+        initializeGame();
+        render();
+      });
+
+      updatePairsCount();
+      applyColors();
+    }
+
+    function updatePairsCount() {
+      const pairsCountEl = document.getElementById('pairsCount');
+      if (pairsCountEl) {
+        pairsCountEl.textContent = matchedPairs;
+      }
+    }
+
+    function applyColors() {
+      const app = document.getElementById('app');
+      const backgroundColor = config.background_color || defaultConfig.background_color;
+      const cardBackColor = config.card_back_color || defaultConfig.card_back_color;
+      const cardFrontColor = config.card_front_color || defaultConfig.card_front_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const buttonColor = config.button_color || defaultConfig.button_color;
+
+      app.style.backgroundColor = backgroundColor;
+
+      const gameTitle = document.getElementById('gameTitle');
+      const pairsLabel = document.getElementById('pairsLabel');
+
+      if (gameTitle) gameTitle.style.color = cardFrontColor;
+      if (pairsLabel) pairsLabel.style.color = cardFrontColor;
+
+      document.querySelectorAll('.card-back').forEach(el => {
+        el.style.backgroundColor = cardBackColor;
+        el.style.color = cardFrontColor;
+      });
+
+      document.querySelectorAll('.card-front').forEach(el => {
+        el.style.backgroundColor = cardFrontColor;
+      });
+
+      document.querySelectorAll('.card-name').forEach(el => {
+        el.style.color = textColor;
+      });
+
+      document.querySelectorAll('button').forEach(btn => {
+        btn.style.backgroundColor = buttonColor;
+        btn.style.color = cardFrontColor;
+
+        btn.onmouseenter = () => {
+          btn.style.transform = 'scale(1.05)';
+          btn.style.filter = 'brightness(1.1)';
+        };
+        btn.onmouseleave = () => {
+          btn.style.transform = 'scale(1)';
+          btn.style.filter = 'brightness(1)';
+        };
+      });
+    }
+
+    async function onConfigChange(newConfig) {
+      const customFont = newConfig.font_family || defaultConfig.font_family;
+      const baseSize = newConfig.font_size || defaultConfig.font_size;
+
+      const gameTitle = document.getElementById('gameTitle');
+      if (gameTitle) {
+        gameTitle.textContent = newConfig.game_title || defaultConfig.game_title;
+        gameTitle.style.fontSize = `${baseSize * 2}px`;
+        gameTitle.style.fontFamily = `'${customFont}', Georgia, serif`;
+      }
+
+      const pairsLabel = document.getElementById('pairsLabel');
+      if (pairsLabel) {
+        pairsLabel.style.fontSize = `${baseSize}px`;
+        pairsLabel.style.fontFamily = `'${customFont}', Georgia, serif`;
+      }
+
+      document.querySelectorAll('button').forEach(btn => {
+        btn.style.fontSize = `${baseSize}px`;
+        btn.style.fontFamily = `'${customFont}', Georgia, serif`;
+      });
+
+      document.querySelectorAll('.card-name').forEach(el => {
+        el.style.fontFamily = `'${customFont}', Georgia, serif`;
+      });
+
+      applyColors();
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities: (cfg) => ({
+          recolorables: [
+            {
+              get: () => cfg.background_color || defaultConfig.background_color,
+              set: (value) => {
+                cfg.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            },
+            {
+              get: () => cfg.card_back_color || defaultConfig.card_back_color,
+              set: (value) => {
+                cfg.card_back_color = value;
+                window.elementSdk.setConfig({ card_back_color: value });
+              }
+            },
+            {
+              get: () => cfg.card_front_color || defaultConfig.card_front_color,
+              set: (value) => {
+                cfg.card_front_color = value;
+                window.elementSdk.setConfig({ card_front_color: value });
+              }
+            },
+            {
+              get: () => cfg.text_color || defaultConfig.text_color,
+              set: (value) => {
+                cfg.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            },
+            {
+              get: () => cfg.button_color || defaultConfig.button_color,
+              set: (value) => {
+                cfg.button_color = value;
+                window.elementSdk.setConfig({ button_color: value });
+              }
+            }
+          ],
+          borderables: [],
+          fontEditable: {
+            get: () => cfg.font_family || defaultConfig.font_family,
+            set: (value) => {
+              cfg.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          },
+          fontSizeable: {
+            get: () => cfg.font_size || defaultConfig.font_size,
+            set: (value) => {
+              cfg.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }),
+        mapToEditPanelValues: (cfg) => new Map([
+          ["game_title", cfg.game_title || defaultConfig.game_title],
+          ["win_message", cfg.win_message || defaultConfig.win_message]
+        ])
+      });
+
+      config = window.elementSdk.config;
+    } else {
+      config = { ...defaultConfig };
+    }
+
+    initializeGame();
+    render();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9aee80a841f87f27',t:'MTc2NTg5MTQ4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
+
+
+

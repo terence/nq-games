@@ -1,0 +1,246 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>JavaScript Arcade Tiles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070b16;
+      --panel: #0d1426;
+      --card: #121c31;
+      --muted: #9fb1d0;
+      --text: #e7eefc;
+      --accent: #f97316;
+      --accent-2: #0ea5e9;
+      --shadow: 0 18px 45px rgba(5, 10, 25, 0.45);
+      --radius: 18px;
+      font-family: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at 15% 20%, rgba(14,165,233,0.12), transparent 32%),
+                  radial-gradient(circle at 85% 10%, rgba(249,115,22,0.12), transparent 28%),
+                  linear-gradient(180deg, #050915 0%, #0b1221 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      padding: 40px 18px 28px;
+      display: flex;
+      justify-content: center;
+    }
+    .container { width: min(1280px, 98%); }
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .eyebrow { text-transform: uppercase; letter-spacing: 0.08em; font-size: 12px; color: var(--muted); margin: 0 0 6px; }
+    h1 { margin: 0 0 8px; font-size: clamp(26px, 3vw, 34px); letter-spacing: -0.5px; }
+    .lead { margin: 0; color: var(--muted); max-width: 720px; font-size: 15px; }
+    .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .search {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 11px 14px;
+      border-radius: 14px;
+      color: var(--text);
+      min-width: 240px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+    .search:focus { outline: 2px solid rgba(14,165,233,0.35); }
+    .chip {
+      background: rgba(255,255,255,0.05);
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: 13px;
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .filter-row { margin: 12px 0 22px; display: flex; flex-wrap: wrap; gap: 10px; }
+    .filter { cursor: pointer; border: 1px solid rgba(255,255,255,0.08); background: var(--panel); color: var(--muted); padding: 8px 12px; border-radius: 12px; font-size: 13px; transition: all 0.2s ease; }
+    .filter:hover { border-color: rgba(14,165,233,0.5); color: var(--text); }
+    .filter.active { background: linear-gradient(120deg, rgba(249,115,22,0.18), rgba(14,165,233,0.2)); color: var(--text); border-color: rgba(14,165,233,0.6); }
+    .grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .tile {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 14px;
+      padding: 16px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius);
+      color: inherit;
+      text-decoration: none;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .tile:hover { transform: translateY(-6px); border-color: rgba(14,165,233,0.6); box-shadow: 0 24px 60px rgba(5,10,25,0.6); }
+    .tile:focus { outline: 2px solid rgba(14,165,233,0.45); }
+    .tile[hidden] { display: none; }
+    .thumb {
+      width: 80px;
+      height: 80px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #334155, #0ea5a4);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: #0b1221;
+      text-transform: uppercase;
+    }
+    .meta h3 { margin: 0 0 6px; font-size: 17px; letter-spacing: -0.2px; }
+    .meta p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag { padding: 6px 9px; background: rgba(255,255,255,0.06); border-radius: 10px; font-size: 12px; color: var(--muted); border: 1px solid rgba(255,255,255,0.07); }
+    .empty { margin: 16px 0 0; color: var(--muted); font-size: 14px; }
+    footer { margin-top: 20px; color: var(--muted); font-size: 13px; }
+    @media (max-width: 560px) { body { padding: 28px 14px; } .tile { grid-template-columns: 1fr; } .thumb { width: 70px; height: 70px; } }
+  </style>
+</head>
+<body>
+  <div class="container" role="main">
+    <header>
+      <div>
+        <p class="eyebrow">JavaScript Arcade</p>
+        <h1>Pick a game tile and play</h1>
+        <p class="lead">Search or filter to jump straight into the retro and arcade projects in this repo.</p>
+      </div>
+      <div class="controls">
+        <input class="search" id="search" placeholder="Search by name or tag" aria-label="Search games" />
+        <div class="chip" id="count">0 games</div>
+      </div>
+    </header>
+
+    <div class="filter-row" aria-label="Filter by genre">
+      <button class="filter active" data-filter="all" type="button">All</button>
+      <button class="filter" data-filter="arcade" type="button">Arcade</button>
+      <button class="filter" data-filter="shooter" type="button">Shooter</button>
+      <button class="filter" data-filter="puzzle" type="button">Puzzle</button>
+      <button class="filter" data-filter="retro" type="button">Retro</button>
+      <button class="filter" data-filter="space" type="button">Space</button>
+    </div>
+
+    <section class="grid" id="grid" aria-live="polite"></section>
+    <p class="empty" id="empty" hidden>No games match that search. Try clearing filters.</p>
+
+    <footer>Tip: Click a tile to open a game. Use the search box or genre filters to narrow things down.</footer>
+  </div>
+
+  <script>
+    const games = [
+      { title: "Asteroids (vanilla)", href: "./asteroids-js/", desc: "Canvas take on the classic rock-shooter arcade game.", tags: ["arcade", "shooter", "space"], color: "linear-gradient(135deg,#1e3a8a,#22d3ee)", icon: "AS" },
+      { title: "Asteroids (p5.js)", href: "./astro2/", desc: "p5.js version with tight controls and thrust mechanics.", tags: ["arcade", "shooter", "space"], color: "linear-gradient(135deg,#0ea5e9,#6366f1)", icon: "A2" },
+      { title: "Bomberman", href: "./bm1/", desc: "Drop bombs, open paths, and outsmart the AI in the maze.", tags: ["arcade", "maze", "retro"], color: "linear-gradient(135deg,#f97316,#f59e0b)", icon: "BM" },
+      { title: "Crossy Road", href: "./crossyroad/", desc: "Dodge lanes of traffic and keep hopping forward.", tags: ["arcade", "runner", "retro"], color: "linear-gradient(135deg,#22c55e,#84cc16)", icon: "CR" },
+      { title: "Doctor Memory", href: "./doc1/", desc: "Flip tiles, match pairs, and clear the board before time runs out.", tags: ["puzzle", "memory"], color: "linear-gradient(135deg,#8b5cf6,#ec4899)", icon: "DM" },
+      { title: "Dwarfs: There and Back", href: "./dwarfs-there-and-back-again/", desc: "Retro strategy-defense featuring busy dwarfs and hazards.", tags: ["strategy", "retro"], color: "linear-gradient(135deg,#fb7185,#facc15)", icon: "DW" },
+      { title: "Frogger", href: "./frogger/", desc: "Hop across roads and rivers without getting squashed.", tags: ["arcade", "retro"], color: "linear-gradient(135deg,#22d3ee,#0ea5e9)", icon: "FR" },
+      { title: "Helicopter", href: "./helicopter/", desc: "Tap to stay airborne while weaving through the cave.", tags: ["arcade", "endless"], color: "linear-gradient(135deg,#f472b6,#a855f7)", icon: "HE" },
+      { title: "Missile Command", href: "./mc1/", desc: "Intercept incoming rockets before cities are lost.", tags: ["arcade", "defense", "shooter"], color: "linear-gradient(135deg,#f43f5e,#f97316)", icon: "MC" },
+      { title: "Minesweeper", href: "./ms1/", desc: "Clear the grid with logic while avoiding hidden mines.", tags: ["puzzle", "logic"], color: "linear-gradient(135deg,#10b981,#14b8a6)", icon: "MW" },
+      { title: "Pacman (classic)", href: "./pacman/", desc: "Maze chase with pellets, ghosts, and power-ups.", tags: ["arcade", "maze", "retro"], color: "linear-gradient(135deg,#fbbf24,#f59e0b)", icon: "P0" },
+      { title: "Pacman v1", href: "./pm1/", desc: "First Pacman variant with tight corridors.", tags: ["arcade", "maze", "retro"], color: "linear-gradient(135deg,#fde047,#f97316)", icon: "P1" },
+      { title: "Pacman v2", href: "./pm2/", desc: "Second Pacman build with tweaks and refinements.", tags: ["arcade", "maze", "retro"], color: "linear-gradient(135deg,#fef08a,#fb7185)", icon: "P2" },
+      { title: "Pacman v3", href: "./pm3/", desc: "Third Pacman iteration with extra polish.", tags: ["arcade", "maze", "retro"], color: "linear-gradient(135deg,#fbbf24,#a78bfa)", icon: "P3" },
+      { title: "Pong", href: "./pong1/", desc: "One-on-one paddle rally for endless volleys.", tags: ["arcade", "retro"], color: "linear-gradient(135deg,#38bdf8,#1d4ed8)", icon: "PG" },
+      { title: "Q1K3", href: "./q1k3/", desc: "Tiny Quake-inspired shooter squeezed into a page.", tags: ["shooter", "retro", "3d"], color: "linear-gradient(135deg,#f97316,#ef4444)", icon: "QK" },
+      { title: "Space Invaders", href: "./si1/", desc: "Defend the planet from descending invaders.", tags: ["arcade", "shooter", "space"], color: "linear-gradient(135deg,#7c3aed,#2563eb)", icon: "SI" },
+      { title: "Space Invaders 2", href: "./si2/", desc: "Second take on the invader-blasting classic.", tags: ["arcade", "shooter", "space"], color: "linear-gradient(135deg,#6366f1,#22d3ee)", icon: "S2" },
+      { title: "Snake", href: "./snake1/", desc: "Grow the snake, grab food, avoid the walls.", tags: ["arcade", "classic"], color: "linear-gradient(135deg,#22c55e,#16a34a)", icon: "SN" },
+      { title: "Space Goblins", href: "./spacegoblins/", desc: "Action shooter starring unruly goblins in space.", tags: ["shooter", "space"], color: "linear-gradient(135deg,#3b82f6,#0ea5e9)", icon: "GB" },
+      { title: "Space Huggers", href: "./SpaceHuggers/", desc: "Fast-paced browser blaster with tight levels.", tags: ["platformer", "shooter"], color: "linear-gradient(135deg,#14b8a6,#22d3ee)", icon: "SH" },
+      { title: "Tetris", href: "./tet1/", desc: "Stack falling tetrominoes to clear lines.", tags: ["puzzle", "classic"], color: "linear-gradient(135deg,#6366f1,#06b6d4)", icon: "TT" }
+    ];
+
+    const grid = document.getElementById("grid");
+    const searchInput = document.getElementById("search");
+    const countChip = document.getElementById("count");
+    const emptyState = document.getElementById("empty");
+    const filterButtons = Array.from(document.querySelectorAll(".filter"));
+    let activeTag = "all";
+    const tiles = games.map(buildTile);
+
+    function buildTile(game) {
+      const card = document.createElement("a");
+      card.className = "tile";
+      card.href = game.href;
+      card.target = "_self";
+      card.rel = "noopener";
+      card.dataset.search = [game.title, game.desc, game.tags.join(" ")].join(" ").toLowerCase();
+      card.dataset.tags = game.tags.join(" ").toLowerCase();
+
+      const thumb = document.createElement("div");
+      thumb.className = "thumb";
+      thumb.style.background = game.color;
+      const icon = document.createElement("span");
+      icon.textContent = game.icon;
+      thumb.appendChild(icon);
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      const title = document.createElement("h3");
+      title.textContent = game.title;
+      const desc = document.createElement("p");
+      desc.textContent = game.desc;
+
+      const tagRow = document.createElement("div");
+      tagRow.className = "tags";
+      game.tags.forEach(tag => {
+        const chip = document.createElement("span");
+        chip.className = "tag";
+        chip.textContent = tag;
+        tagRow.appendChild(chip);
+      });
+
+      meta.appendChild(title);
+      meta.appendChild(desc);
+      meta.appendChild(tagRow);
+
+      card.appendChild(thumb);
+      card.appendChild(meta);
+      grid.appendChild(card);
+      return card;
+    }
+
+    function applyFilters() {
+      const q = searchInput.value.trim().toLowerCase();
+      let visible = 0;
+      tiles.forEach(tile => {
+        const matchesSearch = !q || tile.dataset.search.includes(q);
+        const matchesTag = activeTag === "all" || tile.dataset.tags.includes(activeTag);
+        const isVisible = matchesSearch && matchesTag;
+        tile.hidden = !isVisible;
+        if (isVisible) { visible += 1; }
+      });
+      countChip.textContent = visible + (visible === 1 ? " game" : " games");
+      emptyState.hidden = visible !== 0;
+    }
+
+    searchInput.addEventListener("input", applyFilters);
+    filterButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeTag = btn.dataset.filter;
+        filterButtons.forEach(b => b.classList.toggle("active", b === btn));
+        applyFilters();
+      });
+    });
+
+    countChip.textContent = games.length + " games";
+    applyFilters();
+  </script>
+</body>
+</html>

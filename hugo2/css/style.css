@@ -1,0 +1,11 @@
+:root{--max-width:900px}
+body{font-family:system-ui,Segoe UI,Helvetica,Arial;line-height:1.6;margin:0;color:#222}
+.container{max-width:var(--max-width);margin:2rem auto;padding:0 1rem}
+.site-header{background:#f8f8f8;padding:1rem 0;border-bottom:1px solid #e5e5e5}
+.site-title{margin:0}
+.site-title a{text-decoration:none;color:inherit}
+.post-list{list-style:none;padding:0}
+.post-list li{margin:1rem 0;padding-bottom:1rem;border-bottom:1px dashed #eee}
+.summary{margin:.5rem 0;color:#555}
+.site-footer{padding:2rem 0;text-align:center;color:#666;border-top:1px solid #eee;margin-top:3rem}
+.tag{background:#eef;padding:.15rem .4rem;border-radius:3px;margin-right:.2rem}
