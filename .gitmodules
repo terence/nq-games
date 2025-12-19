@@ -1,0 +1,3 @@
+[submodule "SpaceHuggers"]
+	path = SpaceHuggers
+	url = https://github.com/terence/SpaceHuggers.git
