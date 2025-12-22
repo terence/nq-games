@@ -1,6 +1,9 @@
 [submodule "SpaceHuggers"]
 	path = SpaceHuggers
-	url = https://github.com/terence/SpaceHuggers.git
+	url = https://github.com/terence/nq-space-huggers.git
 [submodule "doctor_memory"]
 	path = doctor_memory
 	url = https://github.com/terence/nq-doctor-memory.git
+[submodule "nq-dwarfs"]
+	path = nq-dwarfs
+	url = https://github.com/terence/nq-dwarfs.git
