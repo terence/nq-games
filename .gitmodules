@@ -7,3 +7,9 @@
 [submodule "nq-dwarfs"]
 	path = nq-dwarfs
 	url = https://github.com/terence/nq-dwarfs.git
+[submodule "nq-asteroids"]
+	path = nq-asteroids
+	url = https://github.com/terence/nq-asteroids.git
+[submodule "nq-pong"]
+	path = nq-pong
+	url = https://github.com/terence/nq-pong.git
