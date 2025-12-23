@@ -34,3 +34,6 @@
 [submodule "nq-chopper"]
 	path = nq-chopper
 	url = https://github.com/terence/nq-chopper.git
+[submodule "nq-minesweeper"]
+	path = nq-minesweeper
+	url = https://github.com/terence/nq-minesweeper.git
