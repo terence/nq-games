@@ -25,3 +25,6 @@
 [submodule "nq-doctor-memory"]
 	path = nq-doctor-memory
 	url = https://github.com/terence/nq-doctor-memory.git
+[submodule "nq-snake"]
+	path = nq-snake
+	url = https://github.com/terence/nq-snake.git
