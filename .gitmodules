@@ -31,3 +31,6 @@
 [submodule "nq-tetris"]
 	path = nq-tetris
 	url = https://github.com/terence/nq-tetris.git
+[submodule "nq-chopper"]
+	path = nq-chopper
+	url = https://github.com/terence/nq-chopper.git
