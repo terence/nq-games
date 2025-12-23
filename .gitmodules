@@ -37,3 +37,6 @@
 [submodule "nq-minesweeper"]
 	path = nq-minesweeper
 	url = https://github.com/terence/nq-minesweeper.git
+[submodule "nq-pacman"]
+	path = nq-pacman
+	url = https://github.com/terence/nq-pacman.git
