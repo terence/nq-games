@@ -28,3 +28,9 @@
 [submodule "nq-snake"]
 	path = nq-snake
 	url = https://github.com/terence/nq-snake.git
+[submodule "nq-frogger"]
+	path = nq-frogger
+	url = https://github.com/terence/nq-frogger.git
+[submodule "nq-tetris"]
+	path = nq-tetris
+	url = https://github.com/terence/nq-tetris.git
