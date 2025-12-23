@@ -1,6 +1,3 @@
-[submodule "doctor-memory"]
-	path = nq-doctor-memory
-	url = https://github.com/terence/nq-doctor-memory.git
 [submodule "nq-dwarfs"]
 	path = nq-dwarfs
 	url = https://github.com/terence/nq-dwarfs.git
