@@ -1,6 +1,3 @@
-[submodule "SpaceHuggers"]
-	path = nq-space-huggers
-	url = https://github.com/terence/nq-space-huggers.git
 [submodule "doctor-memory"]
 	path = nq-doctor-memory
 	url = https://github.com/terence/nq-doctor-memory.git
@@ -19,3 +16,9 @@
 [submodule "nq-missile-command"]
 	path = nq-missile-command
 	url = https://github.com/terence/nq-missile-command.git
+[submodule "nq-lawyer-memory"]
+	path = nq-lawyer-memory
+	url = https://github.com/terence/nq-lawyer-memory.git
+[submodule "nq-space-huggers"]
+	path = nq-space-huggers
+	url = https://github.com/terence/nq-space-huggers.git
