@@ -22,3 +22,6 @@
 [submodule "nq-space-huggers"]
 	path = nq-space-huggers
 	url = https://github.com/terence/nq-space-huggers.git
+[submodule "nq-doctor-memory"]
+	path = nq-doctor-memory
+	url = https://github.com/terence/nq-doctor-memory.git
