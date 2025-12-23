@@ -1,8 +1,8 @@
 [submodule "SpaceHuggers"]
-	path = SpaceHuggers
+	path = nq-space-huggers
 	url = https://github.com/terence/nq-space-huggers.git
-[submodule "doctor_memory"]
-	path = doctor_memory
+[submodule "doctor-memory"]
+	path = nq-doctor_memory
 	url = https://github.com/terence/nq-doctor-memory.git
 [submodule "nq-dwarfs"]
 	path = nq-dwarfs
@@ -13,3 +13,6 @@
 [submodule "nq-pong"]
 	path = nq-pong
 	url = https://github.com/terence/nq-pong.git
+[submodule "nq-helicopter"]
+	path = nq-helicopter
+	url = https://github.com/terence/nq-helicopter.git
