@@ -40,3 +40,6 @@
 [submodule "nq-pacman"]
 	path = nq-pacman
 	url = https://github.com/terence/nq-pacman.git
+[submodule "nq-towers"]
+	path = nq-towers
+	url = https://github.com/terence/nq-towers.git
