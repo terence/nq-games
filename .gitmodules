@@ -7,9 +7,6 @@
 [submodule "nq-pong"]
 	path = nq-pong
 	url = https://github.com/terence/nq-pong.git
-[submodule "nq-helicopter"]
-	path = nq-helicopter
-	url = https://github.com/terence/nq-helicopter.git
 [submodule "nq-missile-command"]
 	path = nq-missile-command
 	url = https://github.com/terence/nq-missile-command.git
@@ -43,3 +40,6 @@
 [submodule "nq-towers"]
 	path = nq-towers
 	url = https://github.com/terence/nq-towers.git
+[submodule "nq-reversi"]
+	path = nq-reversi
+	url = https://github.com/terence/nq-reversi.git
