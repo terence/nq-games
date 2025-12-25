@@ -43,3 +43,6 @@
 [submodule "nq-reversi"]
 	path = nq-reversi
 	url = https://github.com/terence/nq-reversi.git
+[submodule "nq-space-invaders"]
+	path = nq-space-invaders
+	url = https://github.com/terence/nq-space-invaders.git
