@@ -163,8 +163,8 @@
       { title: "Minesweeper", href: "./nq-minesweeper/", desc: "Clear the grid with logic while avoiding hidden mines.", tags: ["puzzle", "logic"], color: "linear-gradient(135deg,#10b981,#14b8a6)", icon: "🧨" },
       { title: "Pacman (classic)", href: "./nq-pacman/", desc: "Maze chase with pellets, ghosts, and power-ups.", tags: ["arcade", "maze", "retro"], color: "linear-gradient(135deg,#fbbf24,#f59e0b)", icon: "🟡" },
       { title: "Pong", href: "./nq-pong/", desc: "One-on-one paddle rally for endless volleys.", tags: ["arcade", "retro"], color: "linear-gradient(135deg,#38bdf8,#1d4ed8)", icon: "🏓" },
-      { title: "Space Invaders", href: "./nq-space-invaders/", desc: "Defend the planet from descending invaders.", tags: ["arcade", "shooter", "space"], color: "linear-gradient(135deg,#7c3aed,#2563eb)", icon: "SI" },
-      { title: "Snake", href: "./nq-snake/", desc: "Grow the snake, grab food, avoid the walls.", tags: ["arcade", "classic"], color: "linear-gradient(135deg,#22c55e,#16a34a)", icon: "SN" },
+      { title: "Space Invaders", href: "./nq-space-invaders/", desc: "Defend the planet from descending invaders.", tags: ["arcade", "shooter", "space"], color: "linear-gradient(135deg,#7c3aed,#2563eb)", icon: "<img src='nq-space-invaders/icon.svg' alt='Space Invaders' style='width:48px;height:48px;' />" },
+      { title: "Snake", href: "./nq-snake/", desc: "Grow the snake, grab food, avoid the walls.", tags: ["arcade", "classic"], color: "linear-gradient(135deg,#22c55e,#16a34a)", icon: "<img src='nq-snake/icon.svg' alt='Snake' style='width:48px;height:48px;' />" },
       { title: "Space Huggers", href: "./nq-space-huggers/", desc: "Fast-paced browser blaster with tight levels.", tags: ["platformer", "shooter"], color: "linear-gradient(135deg,#14b8a6,#22d3ee)", icon: "SH" },
       { title: "Tetris", href: "./nq-tetris/", desc: "Classic block-stacking puzzle. Clear lines for a high score!", tags: ["puzzle", "classic"], color: "linear-gradient(135deg,#6366f1,#06b6d4,#fbbf24)", icon: "🟪" },
       { title: "Towers", href: "./nq-towers/", desc: "Build towers and defend your base against waves of enemies.", tags: ["strategy", "defense", "arcade"], color: "linear-gradient(135deg,#0ea5a4,#facc15)", icon: "🏰" },
@@ -191,9 +191,13 @@
       const thumb = document.createElement("div");
       thumb.className = "thumb";
       thumb.style.background = game.color;
-      const icon = document.createElement("span");
-      icon.textContent = game.icon;
-      thumb.appendChild(icon);
+      if (game.icon.startsWith('<img')) {
+        thumb.innerHTML = game.icon;
+      } else {
+        const icon = document.createElement("span");
+        icon.textContent = game.icon;
+        thumb.appendChild(icon);
+      }
 
       const meta = document.createElement("div");
       meta.className = "meta";
