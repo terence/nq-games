@@ -46,3 +46,6 @@
 [submodule "nq-space-invaders"]
 	path = nq-space-invaders
 	url = https://github.com/terence/nq-space-invaders.git
+[submodule "nq-bomberman"]
+	path = nq-bomberman
+	url = https://github.com/terence/nq-bomberman.git
