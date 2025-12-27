@@ -52,3 +52,6 @@
 [submodule "nq-miniciv"]
 	path = nq-miniciv
 	url = https://github.com/terence/nq-miniciv.git
+[submodule "nq-story-eden"]
+	path = nq-story-eden
+	url = https://github.com/terence/nq-story-eden.git
