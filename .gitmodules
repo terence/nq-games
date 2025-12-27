@@ -49,3 +49,6 @@
 [submodule "nq-bomberman"]
 	path = nq-bomberman
 	url = https://github.com/terence/nq-bomberman.git
+[submodule "nq-miniciv"]
+	path = nq-miniciv
+	url = https://github.com/terence/nq-miniciv.git
